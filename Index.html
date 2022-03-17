@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How to Create and Save text file in JavaScript</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<center>
+                <input type="text" id="input" style="text-align: center"><br><p></p><br>
+
+           
+                <div id="qrcode"></div><br><p></p><br>
+                
+                
+                <button onclick="CreatePDFfromHTMLEnc()">Download Encrypted QR Code</button><br><p></p><br>
+                
+                
+              <div id="qrcodeDecrypt"></div><br><p></p><br>
+              
+              
+                <button onclick="CreatePDFfromHTML()">Download Normal QR Code</button><br><p></p><br>
+</center>
+</head>
+<body>
+
+<script src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://qrgenerator2.netlify.app/api.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+
+    <script>
+    
+        navigator.clipboard.readText().then(text => {
+          document.getElementById('input').value = text
+        })
+    
+    
+    function createQrCode() {
+        var userInput = document.getElementById('input').value;
+    
+        
+        document.getElementById('qrcode').innerHTML = '';
+        
+        var qrcodeEnc = new QRCode("qrcode", {
+            text: btoa(userInput),
+            width: 200,
+            height: 200,
+            colorDark: "white",
+            colorLight: "black",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+        
+ 
+    
+   
+    }
+    
+    function createQrCodeDecryptor() {
+        var userInput = document.getElementById('input').value;
+        
+        document.getElementById('qrcodeDecrypt').innerHTML = '';
+        
+        var qrcodeDecrypt = new QRCode("qrcodeDecrypt", {
+          text: userInput,
+          width: 200,
+          height: 200,
+          colorDark: 'black',
+          colorLight: "white",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+        
+ 
+  
+    
+   
+    }
+   
+  
+   
+   
+        
+   
+    setInterval(createQrCode, 1);
+    setInterval(createQrCodeDecryptor, 1);
+   </script>
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<script>
+
+const Letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+
+const min = 0;
+const max = 25;
+
+const random = Math.floor(Math.random()*(max-min+1)+min);
+const random2 = Math.floor(Math.random()*(max-min+1)+min);
+const random3 = Math.floor(Math.random()*(max-min+1)+min);
+const random4 = Math.floor(Math.random()*(max-min+1)+min);
+const random5 = Math.floor(Math.random()*(max-min+1)+min);
+const random6 = Math.floor(Math.random()*(max-min+1)+min);
+const random7 = Math.floor(Math.random()*(max-min+1)+min);
+const random8 = Math.floor(Math.random()*(max-min+1)+min);
+const random9 = Math.floor(Math.random()*(max-min+1)+min);
+const random10 = Math.floor(Math.random()*(max-min+1)+min);
+//Create PDf from HTML...
+function CreatePDFfromHTML() {
+    var HTML_Width = $("#qrcodeDecrypt").width();
+    var HTML_Height = $("#qrcodeDecrypt").height();
+    var top_left_margin = 15;
+    var PDF_Width = HTML_Width + (top_left_margin * 2);
+    var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+    var canvas_image_width = HTML_Width;
+    var canvas_image_height = HTML_Height;
+
+    var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+    html2canvas($("#qrcodeDecrypt")[0]).then(function (canvas) {
+      
+
+var PromptName = prompt('Write your file name!', Letters[random]+Letters[random2]+Letters[random3]+Letters[random4]+Letters[random5]+Letters[random6]+Letters[random7]+Letters[random8]+Letters[random9]+Letters[random10]+'.pdf');
+
+if(!PromptName){
+
+document.write('Name can not be empty!')  
+  
+  
+}
+
+        var imgData = canvas.toDataURL("image/png", 1.0);
+        var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+        pdf.addImage(imgData, 'PNG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+        for (var i = 1; i <= totalPDFPages; i++) { 
+            pdf.addPage(PDF_Width, PDF_Height);
+            pdf.addImage(imgData, 'PNG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
+        }
+        pdf.save(PromptName);
+        window.location.reload()
+    });
+}
+
+
+
+function CreatePDFfromHTMLEnc() {
+    var HTML_Width2 = $("#qrcode").width();
+    var HTML_Height2 = $("#qrcode").height();
+    var top_left_margin2 = 15;
+    var PDF_Width2 = HTML_Width2 + (top_left_margin2 * 2);
+    var PDF_Height2 = (PDF_Width2 * 1.5) + (top_left_margin2 * 2);
+    var canvas_image_width2 = HTML_Width2;
+    var canvas_image_height2 = HTML_Height2;
+
+    var totalPDFPages2 = Math.ceil(HTML_Height2/ PDF_Height2) - 1;
+
+    html2canvas($("#qrcode")[0]).then(function (canvas) {
+      
+var PromptName2 = prompt('Write your file name!', Letters[random]+Letters[random2]+Letters[random3]+Letters[random4]+Letters[random5]+Letters[random6]+Letters[random7]+Letters[random8]+Letters[random9]+Letters[random10]+'.pdf');
+
+if(!PromptName2){
+
+document.write('Name can not be empty!')  
+  
+  
+}
+        var imgData2 = canvas.toDataURL("image/png", 1.0);
+        var pdf2 = new jsPDF('p', 'pt', [PDF_Width2, PDF_Height2]);
+        pdf2.addImage(imgData2, 'PNG', top_left_margin2, top_left_margin2, canvas_image_width2, canvas_image_height2);
+        for (var i2 = 1; i2 <= totalPDFPages2; i2++) { 
+            pdf2.addPage(PDF_Width2, PDF_Height2);
+            pdf2.addImage(imgData2, 'PNG', top_left_margin2, -(PDF_Height2*i2)+(top_left_margin2*4),canvas_image_width2,canvas_image_height2);
+        }
+        pdf2.save(PromptName2);
+        window.location.reload()
+    });
+}
+
+    </script>
+</body>
+<style>
+  
+  html{
+    
+    background-color: #a6ffc1;
+    
+  }
+  
+  button{
+    
+    background-color: white;
+    color: black;
+    border-radius: 4vh;
+    border: none;
+    width: 50vw;
+    height: 4vh;
+    transition: 0.5s ease-in-out;
+    
+  }
+  
+  div{
+    
+    background-color: white;
+    width: fit-content;
+    height: fit-content;
+    
+    
+  }
+  
+  input{
+    
+    width: 50vw;
+    height: 4vh;
+    border-radius: 3vh;
+    border: none;
+    transition: 0.5s ease-in-out;
+    outline: 0;
+  }
+  
+  input:hover{
+    
+    transition: 0.5s ease-in-out
+    height: 5vh;
+    width: 60vw;
+    outline: 0;
+    
+  }
+</style>
+</html>
